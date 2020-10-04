@@ -61,36 +61,45 @@ class SysBranch extends Model
     $branch->MANAGER=$manager;
     $branch->CREATED_BY=$user_id;
     $branch->UPDATED_BY=$user_id;
-    return $branch->save();
+    if($branch->save()){
+      return 1;
+    }else{
+      return 0;
+    }
+    
    
   }
 
   public function update_data_cbg($branch_id,$branch_code, $branch_name, $alt_name, $org_id,$sob_id,$org_type,$ftp_path,$comp_id,$addr1,$addr2,$addr3,$city,$province,$vat_num,$vat_num_tgl,$addrpkp,$phone,$fax,$manager,$f_comp_id,$user_id)
   {
-    $branch=SysBranch::find($branch_id);
-    $branch->BRANCH_CODE=$branch_code;
-    $branch->BRANCH_NAME=$branch_name;
-    $branch->ALTERNATE_NAME=$alt_name;
-    $branch->ORG_ID=$org_id;
-    $branch->SOB_ID=$sob_id;
-    $branch->ORG_TYPE=$org_type;
-    $branch->FTP_PATH=$ftp_path;
-    $branch->COMPANY_ID=$comp_id;
-    $branch->ADDRESS1=$addr1;
-    $branch->ADDRESS2=$addr2;
-    $branch->ADDRESS3=$addr3;
-    $branch->CITY=$city;
-    $branch->PROVINCE=$province;
-    $branch->VAT_REGISTRATION_NUM=$vat_num;
-    $branch->TGL_NPWP=$vat_num_tgl;
-    $branch->ADDRESS_PKP=$addrpkp;
-    $branch->PHONE=$phone;
-    $branch->FAX=$fax;
-    $branch->MANAGER=$manager;
-    $branch->CREATED_BY=$user_id;
-    $branch->UPDATED_BY=$user_id;
-    return $branch->save();
-   
+
+
+     $company= SysCompany::where('BRANCH_ID',$branch_id)
+          ->update(['BRANCH_CODE' =>$branch_code,
+                'BRANCH_NAME'=>$branch_name,
+                'ALTERNATE_NAME'=>$alt_name,
+                'ORG_ID'=>$org_id,
+                'SOB_ID'=>$sob_id,
+                'ORG_TYPE'=>$org_type,
+                'FTP_PATH'=>$ftp_path,
+                'COMPANY_ID'=>$comp_id,
+                'ADDRESS1'=>$addr1,
+                'ADDRESS2'=>$addr2,
+                'ADDRESS3'=>$addr3,
+                'CITY'=>$city,
+                'PROVINCE'=>$province,
+                'VAT_REGISTRATION_NUM'=>$vat_num,
+                'TGL_NPWP'=>$vat_num_tgl,
+                'ADDRESS_PKP'=>$addrpkp,
+                'PHONE'=>$phone,
+                'FAX'=>$fax,
+                'MANAGER'=>$manager,
+                'LAST_UPDATE_BY'=>$user_id,
+                'ACTIVE_FLAG'=>'Y',
+                'UPDATED_AT'=>date('Y-m-d')
+                ]);
+    return 1;
+      
    
   }
 

@@ -35,21 +35,29 @@ class SysCompany extends Model
     public function update_data_company($company_name,$company_code,$active_flag,$company_id,$user_id)
     {
         if($active_flag =='Y'){
-            $company=SysCompany::find($company_id);
-            $company->COMPANY_NAME=$company_name;
-            $company->LAST_UPDATE_BY=$user_id;
-            $company->ACTIVE_FLAG=$active_flag;
-            $company->ACTIVE_DATE=date('Y-m-d');
-            return $company->save();
+           
+
+            $company= SysCompany::where('COMPANY_ID',$company_id)
+          ->update(['COMPANY_NAME' =>$company_name,
+                'COMPANY_CODE'=>$company_code,
+                'LAST_UPDATE_BY'=>$user_id,
+                'ACTIVE_FLAG'=>'Y',
+                'UPDATED_AT'=>date('Y-m-d')
+                ]);
+            return 1;
 
         }
         else if($active_flag =='N'){
-             $company=SysCompany::find($company_id);
-            $company->COMPANY_NAME=$company_name;
-            $company->LAST_UPDATE_BY=$user_id;
-            $company->ACTIVE_FLAG=$active_flag;
-            $company->INACTIVE_DATE=date('Y-m-d');
-            return $company->save();
+
+             $company= SysCompany::where('COMPANY_ID',$company_id)
+          ->update(['COMPANY_NAME' =>$company_name,
+                'COMPANY_CODE'=>$company_code,
+                'LAST_UPDATE_BY'=>$user_id,
+                'ACTIVE_FLAG'=>'N',
+                'INACTIVE_DATE'=>date('Y-m-d'),
+                'UPDATED_AT'=>date('Y-m-d')
+                ]);
+            return 1;
            
            
         }
@@ -59,7 +67,7 @@ class SysCompany extends Model
 
     public function compare_data_company($company_name,$company_code,$company_id)
     {
-        $cek=SysCompany::where('COMPANY_CODE',$company_code)->orWhere('COMPANY_NAME'=$company_name)->where('COMPANY_ID','!=',$company_id)->get();
+        $cek=SysCompany::where('COMPANY_CODE',$company_code)->orWhere('COMPANY_NAME',$company_name)->where('COMPANY_ID','!=',$company_id)->get();
        return $cek->count();
     }
 

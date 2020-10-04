@@ -38,17 +38,21 @@ class Home extends BaseController
         $menu=new SysMenu();
         $menu_header = $menu->get_menu($resp_id);
         $navigasi = array();
+
         if ($menu_header) {
             foreach ($menu_header as $mh) {
                 $result = array();
+                $menu_icon=array();
                 $result['id'] = $mh->MENU_ID;
-                $result['text'] = $mh->MENU_DESC;
-                $result['iconCls'] = 'icon-ess-menu';
+                $result['name'] = $mh->MENU_NAME;
+                $result['displayName'] = $mh->MENU_DESC;
+                $menu_icon['iconClass']='vuestic-iconset vuestic-iconset-ui-elements';
+                $result['meta'] = $menu_icon;
                 if($mh->IS_DETAIL == 'Y'){ //kalau menu detail=Y, tidak punya anak
-                    $result['state'] = 'close';             
+                    $result['disabled'] = 'false';             
                      $result['attributes'] = array('url'=>base_url($mh->URL),'width'=>'','height'=>'');
                 }else{
-                     $result['state'] = 'open';
+                     $result['disabled'] = 'true';
                      $result['children'] = $this->get_detail_menu($mh->MENU_ID);
                  }
                 array_push($navigasi,$result);
@@ -65,7 +69,8 @@ class Home extends BaseController
             foreach ($menu_detail as $md) {
                 $result = array();
                 $result['id'] = $md->MENU_DETAIL_ID;
-                $result['text'] = $md->MENU_DETAIL_DESC;
+                $result['name'] = $md->MENU_DETAIL_DESC;
+                $result['displayName'] = $md->MENU_DETAIL_DESC;
                 if($md->SUB_MENU_DETAIL == null){
                     $result['iconCls'] = 'icon-ess-menu-detail';
                     $result['state'] = 'close';

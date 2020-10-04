@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
-
+use App\SysRole;
 class User extends Model
 {
     protected $table = 'sys_user';
@@ -45,13 +45,13 @@ class User extends Model
 	}
 
 	public function update_user($username,$role,$active_date,$active_flag,$email,$user_id){
-		if($active_flag==0){
-			$active_flag='N';
-		}else{
+		if($active_flag==true){
 			$active_flag='Y';
+		}else{
+			$active_flag='N';
 		}
-		$user=User::where('id',$user_id)
-          ->update(['ROLE_ID' =>$role,
+		$user=User::where('USERNAME',$username)
+          ->update(['ROLE_ID' =>SysRole::where('ROLE_NAME',$role)->value('ROLE_ID'),
           			'ACTIVE_FLAG'=>$active_flag,
           			'EMAIL'=>$email,
           			'ACTIVE_DATE'=>$active_date,
@@ -71,14 +71,14 @@ class User extends Model
 	}
 
 	public function insert_user($username,$role,$active_date,$active_flag,$email,$user_id){
-		if($active_flag==0){
+		if($active_flag==true){
 			$active_flag='Y';
 		}else{
 			$active_flag='N';
 		}
 		$user=new User();
 		$user->USERNAME=$username;
-		$user->ROLE_ID=$role;
+		$user->ROLE_ID=SysRole::where('ROLE_NAME',$role)->value('ROLE_ID');
 		$user->ACTIVE_FLAG=$active_flag;
 		$user->EMAIL=$email;
 		$user->ACTIVE_DATE=$active_date;

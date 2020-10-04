@@ -30,9 +30,10 @@ class SysUserResp extends Model
     }
     public function insert_data($user_id,$username,$resp_name,$active_date){
         $cek=SysUserResp::where('USER_ID',User::where('username',$username)->value('ID'))->where('RESP_ID',SysResp::where('RESPONSIBILITY_NAME',$resp_name)->value('RESPONSIBILITY_ID'))->get();
+         $user_resp = new SysUserResp;
         if($cek->count()=='0'){
 
-             $user_resp = new SysUserResp;
+            
              $user_resp->USER_ID = User::where('username',$username)->value('ID');
              $user_resp->RESP_ID=SysResp::where('RESPONSIBILITY_NAME',$resp_name)->value('RESPONSIBILITY_ID');
              $user_resp->ACTIVE_DATE=$active_date;

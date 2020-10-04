@@ -59,6 +59,7 @@ class MasterRole extends BaseController
      $role_desc=$this->request->input('role_desc');
       $role_name=$this->request->input('role_name');
       $user_id=$this->request->input('user_id');
+       $role_id=$this->request->input('role_id');
       $role=new SysRole();   
       return response()->json($role->update_role($role_name,$role_desc,$role_id,$user_id), 200); 
   }

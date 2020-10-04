@@ -9,14 +9,14 @@ class SysRole extends Model
 {
     protected $table = 'sys_role';
     public function get_list_role(){
-    	$statement = 'SELECT * FROM SYS_ROLE';
+    	$statement = 'SELECT ROLE_ID,ROLE_NAME,ROLE_DESC FROM SYS_ROLE';
         $data=DB::select(DB::raw($statement));        
         return $data;
 
     }
     public function get_data_master_role()
     {
-        $statement = 'SELECT * FROM SYS_ROLE ORDER BY ROLE_ID';
+        $statement = 'SELECT ROLE_ID,ROLE_NAME,ROLE_DESC FROM SYS_ROLE ORDER BY ROLE_ID';
         $data=DB::select(DB::raw($statement));        
         return $data;
     }
@@ -28,23 +28,27 @@ class SysRole extends Model
     $role->ROLE_DESC=$role_desc;
     $role->CREATED_BY=$user_id;
     $role->LAST_UPDATE_BY=$user_id;
-    return $role->save();
+    $role->save();
+    return 1;
   }
 
    public function update_role($role_name,$role_desc,$role_id,$user_id)
   {
-    $role = SysRole::where('ROLE_ID',$role_id);
-    $role->ROLE_NAME=$role_name;
-    $role->ROLE_DESC=$role_desc;
-    $role->CREATED_BY=$user_id;
-    $role->LAST_UPDATE_BY=$user_id;
-    return $role->save();
+
+    $role=SysRole::where('ROLE_ID',$role_id)
+          ->update(['ROLE_NAME' =>$role_name,
+                'ROLE_DESC'=>$role_desc,
+                'LAST_UPDATE_BY'=>$user_id,
+                'UPDATED_AT'=>date('Y-m-d')
+                ]);
+
+    return 1;
   }
  
 
   public function compare_data_master_role($role_name,$role_id)
   {
-    $cek=SysRole::where('TRIM(UPPER(ROLE_NAME))','LIKE ','%'.$role_name.'%')->where('ROLE_ID','NOT LIKE',$role_id)->get();
+    $cek=SysRole::where('ROLE_NAME','LIKE ','%'.$role_name.'%')->where('ROLE_ID','NOT LIKE',$role_id)->get();
     return $cek->count();
   }
 }

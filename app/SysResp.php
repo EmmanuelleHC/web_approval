@@ -28,7 +28,7 @@ class SysResp extends Model
 		(select SB.COMPANY_ID from SYS_BRANCH SB where SB.BRANCH_ID = SR.BRANCH_ID)) as COMPANY_NAME,
 		(select CONCAT(SB.ORG_TYPE,\' - \',SB.BRANCH_NAME) from SYS_BRANCH SB where SB.BRANCH_ID = SR.BRANCH_ID) as BRANCH_NAME,
 		(select SM.MENU_NAME from SYS_MENU SM where SM.MENU_ID = SR.MENU_ID) as MENU
-		FROM SYS_RESPONSIBILITY SR where SR.ROLE_ID='.$role_id.' ORDER BY SR.RESPONSIBILITY_ID';
+		FROM SYS_RESPONSIBILITY SR where SR.ROLE_ID=(SELECT ROLE_ID FROM sys_role where ROLE_NAME=\''.$role_id.'\') ORDER BY SR.RESPONSIBILITY_ID';
 		$data=DB::select(DB::raw($statement));        
         return $data;
 	}
