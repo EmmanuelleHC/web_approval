@@ -49,7 +49,7 @@ class SysMenu extends Model
     }
 
     
-    public function get_data_menu($offset,$rows,$where) //untuk tabel menu header
+    public function get_data_menu() //untuk tabel menu header
     {
         $statement = 'SELECT sm.* FROM SYS_MENU sm ';
         $data=DB::select(DB::raw($statement));        

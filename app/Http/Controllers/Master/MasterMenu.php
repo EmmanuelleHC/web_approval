@@ -8,7 +8,6 @@ use App\SysMenuDetail;
 use App\SysMenu;
 use App\User;
 use App\SysUserResp;
-use App\SysResp;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Firebase\JWT\ExpiredException;

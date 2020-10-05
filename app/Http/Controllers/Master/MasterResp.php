@@ -38,6 +38,8 @@ class MasterResp extends BaseController
 
     }
 
+
+
     public function get_resp_active_flag(Request $request)
     {
 
@@ -51,20 +53,17 @@ class MasterResp extends BaseController
 
     public function insert_data_resp(Request $request)
     {
-        $resp_id = $this
-            ->request
-            ->input('resp_id');
         $role_id = $this
             ->request
-            ->input('role_id');
+            ->input('role');
 
         $branch_id = $this
             ->request
-            ->input('branch_id');
+            ->input('branch');
 
         $menu_id = $this
             ->request
-            ->input('menu_id');
+            ->input('menu');
 
         $resp_name = $this
             ->request
@@ -82,7 +81,7 @@ class MasterResp extends BaseController
             ->request
             ->input('user_id');
         $resp = new SysResp();
-        return response()->json($resp->insert_data_resp($resp_id, $role_id, $branch_id, $menu_id, $resp_name, $resp_desc, $act_flag, $user_id) , 200);
+        return response()->json($resp->insert_data_resp($role_id, $branch_id, $menu_id, $resp_name, $resp_desc, $act_flag, $user_id) , 200);
 
     }
 
@@ -92,17 +91,7 @@ class MasterResp extends BaseController
         $resp_id = $this
             ->request
             ->input('resp_id');
-        $role_id = $this
-            ->request
-            ->input('role_id');
-
-        $branch_id = $this
-            ->request
-            ->input('branch_id');
-
-        $menu_id = $this
-            ->request
-            ->input('menu_id');
+     
 
         $resp_name = $this
             ->request
@@ -114,16 +103,14 @@ class MasterResp extends BaseController
 
         $act_flag = $this
             ->request
-            ->input('act_flag');
+            ->input('active_flag');
 
         $user_id = $this
             ->request
             ->input('user_id');
-        $flag = $this
-            ->request
-            ->input('flag');
+       
         $resp = new SysResp();
-        return response()->json($resp->update_data_resp($resp_id, $role_id, $branch_id, $menu_id, $resp_name, $resp_desc, $act_flag, $flag, $user_id) , 200);
+        return response()->json($resp->update_data_resp($resp_id, $resp_name, $resp_desc, $act_flag, $user_id) , 200);
 
     }
 

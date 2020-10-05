@@ -8,7 +8,6 @@ use App\SysResp;
 use App\SysBranch;
 use App\User;
 use App\SysUserResp;
-use App\SysResp;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Firebase\JWT\ExpiredException;
@@ -61,6 +60,15 @@ class MasterBranch extends BaseController
     $branch=new SysBranch();
     return response()->json($branch->get_data_cbg(), 200);
   }
+
+
+  public function get_data_cbg_by_company(Request $request)
+  { $company_id=$this->request->input('company_id');
+    $branch=new SysBranch();
+    return response()->json($branch->get_data_cbg($company_id), 200);
+  }
+
+
 
   public function insert_data_cbg(Request $request)
   {$num=$this->request->input('num');

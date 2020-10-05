@@ -50,10 +50,14 @@ $router->group(['middleware' => 'jwt.auth'], function () use ($router)
     $router->post('insert_data_company', ['uses' => 'Master\MasterCompany@insert_data_company']);
     $router->post('update_data_company', ['uses' => 'Master\MasterCompany@update_data_company']);
     $router->post('compare_data_company', ['uses' => 'Master\MasterCompany@compare_data_company']);
+    $router->post('get_data_cbg_by_company', ['uses' => 'Master\MasterBranch@get_data_cbg_by_company']);
     $router->post('check_branch_org_id', ['uses' => 'Master\MasterBranch@check_branch_org_id']);
     $router->post('get_data_cbg', ['uses' => 'Master\MasterBranch@get_data_cbg']);
     $router->post('insert_data_cbg', ['uses' => 'Master\MasterBranch@insert_data_cbg']);
     $router->post('update_data_cbg', ['uses' => 'Master\MasterBranch@update_data_cbg']);
+    $router->post('get_data_cbg_by_company', ['uses' => 'Master\MasterBranch@get_data_cbg_by_company']);
+
+    
     $router->post('save_data_master_responsibility', ['uses' => 'Master\MasterMenu@save_data_master_responsibility']);
     $router->post('get_data_menu', ['uses' => 'Master\MasterMenu@get_data_menu']);
     $router->post('get_data_menu_all', ['uses' => 'Master\MasterMenu@get_data_menu_all']);

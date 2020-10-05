@@ -25,11 +25,15 @@ class SysBranch extends Model
     return $statement->count();
   }
 
+  public function get_data_cbg_by_company($company_id)
+  {
+     $statement=SysBranch::where('COMPANY_ID','=',$company_id)->get();
+    return $statement;
+  }
   public function get_data_cbg()
   {
     $statement = 'SELECT SB.BRANCH_ID,SB.BRANCH_CODE,SB.BRANCH_NAME,SB.ALTERNATE_NAME,SB.ORG_ID, SB.SOB_ID, SB.ORG_TYPE,SB.COMPANY_ID,SB.FTP_PATH,SB.ADDRESS1,SB.ADDRESS2,SB.ADDRESS3
       ,SB.CITY,SB.PROVINCE,SB.VAT_REGISTRATION_NUM,SB.TGL_NPWP,SB.MANAGER,SB.PHONE,SB.FAX,SB.LAST_UPDATE_DATE,
-     (SELECT SS.SOB_BRANCH_ID FROM SYS_SOB SS WHERE SS.SOB_ID = SB.SOB_ID) as SOB,
      (SELECT SC.COMPANY_NAME FROM SYS_COMPANY SC WHERE SC.COMPANY_ID = SB.COMPANY_ID) as COMPANY
      FROM SYS_BRANCH SB  ORDER BY SB.BRANCH_CODE ';
     $data=DB::select(DB::raw($statement));        

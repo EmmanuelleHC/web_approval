@@ -1,7 +1,9 @@
 <?php
 
 namespace App;
-
+use App\SysRole;
+use App\SysMenu;
+use App\SysBranch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -21,7 +23,7 @@ class SysResp extends Model
 	}
 	public function get_list_user_resp($role_id){
 		$statement = 'SELECT SR.RESPONSIBILITY_ID,SR.RESPONSIBILITY_ID,SR.ROLE_ID,SR.BRANCH_ID,SR.MENU_ID,SR.RESPONSIBILITY_NAME,
-		SR.RESPONSIBILITY_DESC,SR.ACTIVE_FLAG,SR.ACTIVE_DATE,SR.INACTIVE_DATE,SR.LAST_UPDATE_DATE,
+		SR.RESPONSIBILITY_DESC,SR.ACTIVE_FLAG,SR.ACTIVE_DATE,SR.INACTIVE_DATE,SR.UPDATED_AT,
 		(select SB.COMPANY_ID from SYS_BRANCH SB where SB.BRANCH_ID = SR.BRANCH_ID) as COMPANY_ID,
 		(select ROLE_NAME from SYS_ROLE where ROLE_ID = SR.ROLE_ID) as ROLE,
 		(select SC.COMPANY_NAME from SYS_COMPANY SC where SC.COMPANY_ID = 
@@ -36,7 +38,7 @@ class SysResp extends Model
 	public function get_data_master_resp()
 	{
 		$statement = 'SELECT SR.RESPONSIBILITY_ID,SR.RESPONSIBILITY_ID,SR.ROLE_ID,SR.BRANCH_ID,SR.MENU_ID,SR.RESPONSIBILITY_NAME,
-		SR.RESPONSIBILITY_DESC,SR.ACTIVE_FLAG,SR.ACTIVE_DATE,SR.INACTIVE_DATE,SR.LAST_UPDATE_DATE,
+		SR.RESPONSIBILITY_DESC,SR.ACTIVE_FLAG,SR.ACTIVE_DATE,SR.INACTIVE_DATE,SR.UPDATED_AT,
 		(select SB.COMPANY_ID from SYS_BRANCH SB where SB.BRANCH_ID = SR.BRANCH_ID) as COMPANY_ID,
 		(select ROLE_NAME from SYS_ROLE where ROLE_ID = SR.ROLE_ID) as ROLE,
 		(select SC.COMPANY_NAME from SYS_COMPANY SC where SC.COMPANY_ID = 
@@ -54,69 +56,44 @@ class SysResp extends Model
     	return $data;
 	}
 
-	public function insert_data_resp($resp_id,$role_id,$branch_id,$menu_id,$resp_name,$resp_desc,$act_flag,$user_id)
+	public function insert_data_resp($role_id,$branch_id,$menu_id,$resp_name,$resp_desc,$act_flag,$user_id)
 	{	$data=new SysResp();
-		$data->ROLE_ID=$role_id;
-		$data->MENU_ID=$menu_id;
+		$data->ROLE_ID=SysRole::where('ROLE_NAME',$role_id)->value('ROLE_ID');
+		$data->MENU_ID=SysMenu::where('MENU_NAME',$menu_id)->value('MENU_ID');
 		$data->RESPONSIBILITY_NAME=$resp_name;
 		$data->RESPONSIBILITY_DESC=$resp_desc;
-		$data->BRANCH_ID=$branch_id;
+		$data->BRANCH_ID=SysBranch::where('BRANCH_NAME',$branch_id)->value('BRANCH_ID');
 		$data->ACTIVE_FLAG=$act_flag;
 		$data->ACTIVE_DATE=date('Y-m-d');
-		$data->CREATED_BY=$user_id;
+		$data->CREATED_AT=$user_id;
 		$data->LAST_UPDATE_BY=$user_id;
 		return $data->save();
 	}
 
-	public function update_data_resp($resp_id,$role_id,$branch_id,$menu_id,$resp_name,$resp_desc,$act_flag,$flag,$user_id)
+	public function update_data_resp($resp_id,$resp_name,$resp_desc,$act_flag,$user_id)
 	{
 
-		if($flag == 'Y' && $act_flag == 'Y'){
-			$data=SysResp::find($resp_id);
-			$data->ROLE_ID=$role_id;
-			$data->MENU_ID=$menu_id;
-			$data->RESPONSIBILITY_NAME=$resp_name;
-			$data->RESPONSIBILITY_DESC=$resp_dec;
-			$data->BRANCH_ID=$branch_id;
-			$data->LAST_UPDATE_BY=$user_id;
-			return $data->save();
+		if($act_flag == 'Y'){
+			  $data=SysResp::where('RESPONSIBILITY_ID',$resp_id)->update(['RESPONSIBILITY_NAME' =>$resp_name,
+                'RESPONSIBILITY_DESC'=>$resp_desc,
+                'INACTIVE_DATE'=>null,
+                'ACTIVE_FLAG'=>'Y',
+                'LAST_UPDATE_BY'=>$user_id,
+                'UPDATED_AT'=>date('Y-m-d')
+                ]);
+
+			return 1;
 		}
-		else if($flag == 'Y' && $act_flag == 'N'){
-			$data=SysResp::find($resp_id);
-			$data->ROLE_ID=$role_id;
-			$data->MENU_ID=$menu_id;
-			$data->ACTIVE_FLAG=$act_flag;
-			$data->RESPONSIBILITY_NAME=$resp_name;
-			$data->RESPONSIBILITY_DESC=$resp_dec;
-			$data->BRANCH_ID=$branch_id;
-			$data->INACTIVE_DATE=date('Y-m-d');
-			$data->LAST_UPDATE_BY=$user_id;
-			return $data->save();
-			
-		}
-		else if($flag == 'N' && $act_flag == 'Y'){
-			$data=SysResp::find($resp_id);
-			$data->ROLE_ID=$role_id;
-			$data->MENU_ID=$menu_id;
-			$data->ACTIVE_FLAG=$act_flag;
-			$data->RESPONSIBILITY_NAME=$resp_name;
-			$data->RESPONSIBILITY_DESC=$resp_dec;
-			$data->BRANCH_ID=$branch_id;
-			$data->ACTIVE_DATE=date('Y-m-d');
-			$data->LAST_UPDATE_BY=$user_id;
-			return $data->save();
-			
-		}
-		else{
-			$data=SysResp::find($resp_id);
-			$data->ROLE_ID=$role_id;
-			$data->MENU_ID=$menu_id;
-			$data->ACTIVE_FLAG=$act_flag;
-			$data->RESPONSIBILITY_NAME=$resp_name;
-			$data->RESPONSIBILITY_DESC=$resp_dec;
-			$data->BRANCH_ID=$branch_id;
-			$data->LAST_UPDATE_BY=$user_id;
-			return $data->save();
+		else if($act_flag == 'N'){
+			 $data=SysResp::where('RESPONSIBILITY_ID',$resp_id)->update(['RESPONSIBILITY_NAME' =>$resp_name,
+                'RESPONSIBILITY_DESC'=>$resp_desc,
+                'INACTIVE_DATE'=>date('Y-m-d'),
+                'LAST_UPDATE_BY'=>$user_id,
+                'ACTIVE_FLAG'=>'N',
+                'UPDATED_AT'=>date('Y-m-d')
+                ]);
+
+			return 1;
 			
 		}
 		
