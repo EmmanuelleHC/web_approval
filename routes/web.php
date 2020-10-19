@@ -70,7 +70,17 @@ $router->group(['middleware' => 'jwt.auth'], function () use ($router)
     $router->post('insert_data_menu', ['uses' => 'Master\MasterMenu@insert_data_menu']);
     $router->post('update_data_menu', ['uses' => 'Master\MasterMenu@update_data_menu']);
     
+    $router->post('get_inq_p3at', ['uses' => 'P3AT\P3ATController@get_inq_p3at']);
+    $router->post('get_inq_app_p3at', ['uses' => 'P3AT\P3ATController@get_inq_app_p3at']);
+     $router->post('get_detail_p3at', ['uses' => 'P3AT\P3ATController@get_detail_p3at']);
+     $router->post('ws_download_data_p3at', ['uses' => 'P3AT\P3ATApi@ws_download_data_p3at']);
+     $router->post('ws_return_status_p3at', ['uses' => 'P3AT\P3ATApi@ws_return_status_p3at']);
+      $router->post('ws_p3at_board_approval', ['uses' => 'P3AT\P3ATApi@ws_p3at_board_approval']);
 
+      $router->post('ws_p3at_board_appr_result', ['uses' => 'P3AT\P3ATApi@ws_p3at_board_appr_result']);
+       $router->post('get_log_history', ['uses' => 'P3AT\P3ATController@get_log_history']);
+       $router->post('reject_p3at', ['uses' => 'P3AT\P3ATController@reject_p3at']);
+        $router->post('approve_p3at', ['uses' => 'P3AT\P3ATController@approve_p3at']);
 
     
 

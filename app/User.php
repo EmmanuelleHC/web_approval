@@ -18,7 +18,7 @@ class User extends Model
     public function get_data_sess($username,$password){
     	 $query="SELECT su.*, sr.ROLE_ID, sres.RESPONSIBILITY_ID, sb.BRANCH_ID, sb.BRANCH_NAME, sb.SOB_ID, sb.COMPANY_ID, sc.COMPANY_NAME, (FLOOR(10000 + RAND() * 89999)) AS UNIQ_NUMBER 
 		FROM sys_user su, sys_role sr, sys_responsibility sres, sys_branch sb, sys_user_resp sur, sys_company sc 
-		WHERE su.ROLE_ID = sr.ROLE_ID AND sres.ROLE_ID = sr.ROLE_ID AND sres.BRANCH_ID = sb.BRANCH_ID AND sur.USER_ID = su.ID AND sur.RESP_ID = sres.RESPONSIBILITY_ID AND sc.COMPANY_ID = sb.COMPANY_ID AND sur.ACTIVE_FLAG='Y' AND su.USERNAME = '".$username."' AND su.PASSWORD = '".$password."' AND su.ACTIVE_FLAG = 'Y' AND sres.ACTIVE_FLAG = 'Y' limit 1;";
+		WHERE su.ROLE_ID = sr.ROLE_ID AND sres.ROLE_ID = sr.ROLE_ID AND sres.BRANCH_ID = sb.BRANCH_ID AND sur.USER_ID = su.ID AND sur.RESP_ID = sres.RESPONSIBILITY_ID AND sc.COMPANY_ID = sb.COMPANY_ID AND sur.ACTIVE_FLAG='Y' AND su.USERNAME = '".$username."' AND su.PASSWORD = '".$password."' AND su.ACTIVE_FLAG = 'Y' AND sres.ACTIVE_FLAG = 'Y' limit 1";
 
         $data=DB::select(DB::raw($query));        
         return $data;

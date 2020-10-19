@@ -68,7 +68,7 @@ class AuthController extends BaseController
         if (Hash::check($this->request->input('password'), $user->PASSWORD)) {
             $model=new User();
             $data=$model->get_data_sess($this->request->input('username'),$user->PASSWORD);
- 
+          
             return response()->json([
                 'is_login' => true,
                 'user_id' =>$data[0]->ID,

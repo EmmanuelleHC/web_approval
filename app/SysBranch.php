@@ -107,6 +107,7 @@ class SysBranch extends Model
    
   }
 
+  
   // public function deactivate_flex_branch($branch_id,$comp_id)
   // {
   //   $statement = 'UPDATE SYS_FLEX SET ACTIVE_FLAG = \'N\' WHERE ATTRIBUTE1 = ? AND ATTRIBUTE2 = ? AND FLEX_TYPE = \'CABANG\'';
