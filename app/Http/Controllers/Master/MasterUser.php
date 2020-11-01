@@ -46,6 +46,14 @@ class MasterUser extends BaseController
        return response()->json($user->get_list_user(), 200);
                
     }
+      public function compare_data_user(Request $request)
+  {
+     $username=$this->request->input('username');
+      $user_id=$this->request->input('user_id');
+     
+       $user=new SysUser();   
+      return response()->json($user->compare_data_user($username,$user_id), 200); 
+  }
     public function get_list_role(Request $request){ 
        
        $role=new SysRole();   

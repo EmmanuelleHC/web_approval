@@ -7,13 +7,13 @@ use App\SysResp;
 
 use App\SysBranch;
 use App\User;
-use App\SysUserResp;
+use App\ApprovalMaster;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Lumen\Routing\Controller as BaseController;
-class MasterBranch extends BaseController 
+class MasterApproval extends BaseController 
 {
     /**
      * The request instance.
@@ -31,34 +31,19 @@ class MasterBranch extends BaseController
         $this->request = $request;
     }
 
-   
-
-  // public function get_data_sob_cbg(Request $request)
-  // {
-  //   $branch_id=$this->request->input('branch_id');
-  //   $branch=new SysBranch();   
-  //   return response()->json($branch->get_data_sob_cab($company_name,$company_code,$active_flag,$user_id), 200);
-  //   $statement = 'SELECT SOB_ID, concat(SOB_BRANCH_ID,\' - \', SOB_NAME) SOB_NAME FROM SYS_SOB where SOB_ID not in (SELECT SOB_ID from SYS_BRANCH WHERE SOB_ID is not null AND SOB_ID != 0 AND BRANCH_ID != \''.$branch_id.'\')';
-  //   return $this->db->query($statement)->result();
-  // }
-
-  // public function select_cbg_company_sob()
-  // {
-  //   $statement = 'SELECT b.*, c.COMPANY_CODE, c.COMPANY_NAME, s.SOB_ID, s.SOB_NAME from sys_branch b, sys_company c, sys_sob s WHERE b.SOB_ID = \''.$this->session->userdata('sob_id').'\' AND b.COMPANY_ID = c.COMPANY_ID AND b.SOB_ID = s.SOB_ID';
-  //   return $this->db->query($statement)->row();
-  // }
-
-  public function check_branch_org_id(Request $request)
-  {   $num=$this->request->input('num');
-      $id=$this->request->input('id');
-      $branch=new SysBranch();
-      return response()->json($branch->check_branch_org_id($id,$num), 200);
+  
+  public function get_data_master_approval(Request $request)
+  {   
+      $approval_master=new ApprovalMaster();
+      return response()->json($approval_master->get_data_master_approval(), 200);
   }
 
-  public function get_data_cbg(Request $request)
+  public function get_data_approval_detail(Request $request)
   {
-    $branch=new SysBranch();
-    return response()->json($branch->get_data_cbg(), 200);
+    $id=$this->request->input('ID');
+    
+    $approval_master=new ApprovalMaster();
+    return response()->json($approval_master->get_data_approval_detail($id), 200);
   }
 
 

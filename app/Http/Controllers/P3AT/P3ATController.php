@@ -3,7 +3,7 @@ namespace App\Http\Controllers\P3AT;
 use Validator;
 
 use App\SysResp;
-
+use App\SysRefNumOtp;
 use App\P3atTrx;
 use App\SysBranch;
 use App\User;
@@ -50,7 +50,38 @@ class P3ATController extends BaseController
     }
     
 
+    public function cek_otp(Request $Request)
+    {
+        $user_id=$this->request->input('user_id');
+        $data=new SysRefNumOtp();
 
+        return response()->json($data->cek_otp($user_id), 200);
+    }
+
+
+    public function get_last_otp(Request $Request)
+    {
+        $user_id=$this->request->input('user_id');
+        $data=new SysRefNumOtp();
+        
+        return response()->json($data->get_last_otp($user_id), 200);
+    }
+
+    public function generate_otp(Request $request)
+    {
+        $user_id=$this->request->input('user_id');
+        $data=new SysRefNumOtp();
+        return response()->json($data->generate_otp($user_id), 200);
+    }
+
+    public function submit_otp(Request $request)
+    {
+        $user_id=$this->request->input('user_id');
+        $ref_num=$this->request->input('referenceNum');
+        $otp_num=$this->request->input('otp');
+        $data=new SysRefNumOtp();
+        return response()->json($data->submit_otp($user_id,$ref_num,$otp_num), 200);
+    }
      public function get_detail_p3at(Request $request)
     {   
         $p3at_number=$this->request->input('P3AT_NUMBER');

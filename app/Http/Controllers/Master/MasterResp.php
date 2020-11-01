@@ -75,7 +75,7 @@ class MasterResp extends BaseController
 
         $act_flag = $this
             ->request
-            ->input('act_flag');
+            ->input('active_flag');
 
         $user_id = $this
             ->request
@@ -84,7 +84,16 @@ class MasterResp extends BaseController
         return response()->json($resp->insert_data_resp($role_id, $branch_id, $menu_id, $resp_name, $resp_desc, $act_flag, $user_id) , 200);
 
     }
+     public function compare_data_resp(Request $request)
+  {
 
+    $resp_name=$this->request->input('resp_name');
+    $resp_desc=$this->request->input('resp_desc');
+    $resp_id=$this->request->input('resp_id');
+    $resp=new SysResp(); 
+     return response()->json($resp->compare_data_resp($resp_name,$resp_desc,$resp_id), 200);  
+ 
+  }
     public function update_data_resp(Request $request)
     {
 

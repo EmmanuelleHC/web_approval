@@ -46,9 +46,20 @@ class SysRole extends Model
   }
  
 
-  public function compare_data_master_role($role_name,$role_id)
+  public function compare_data_master_role($role_name,$role_desc,$role_id)
   {
-    $cek=SysRole::where('ROLE_NAME','LIKE ','%'.$role_name.'%')->where('ROLE_ID','NOT LIKE',$role_id)->get();
+    if($role_id==''){
+       $cek=SysRole::where('ROLE_NAME','=',$role_name)->orWhere('ROLE_DESC','=',$role_desc)->get();
+    }else{
+      $cek=DB::table('sys_role')
+            ->where('ROLE_ID', '!=', $role_id)
+            ->where(function ($query)  use ($role_name,$role_desc) {
+                $query->where('ROLE_NAME','=',$role_name)
+                      ->orWhere('ROLE_DESC',$role_desc);
+            })
+            ->get();
+    }
+   
     return $cek->count();
   }
 }

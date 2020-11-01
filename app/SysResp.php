@@ -58,18 +58,39 @@ class SysResp extends Model
 
 	public function insert_data_resp($role_id,$branch_id,$menu_id,$resp_name,$resp_desc,$act_flag,$user_id)
 	{	$data=new SysResp();
-		$data->ROLE_ID=SysRole::where('ROLE_NAME',$role_id)->value('ROLE_ID');
-		$data->MENU_ID=SysMenu::where('MENU_NAME',$menu_id)->value('MENU_ID');
+		$data->ROLE_ID=$role_id;
+		$data->MENU_ID=$menu_id;
 		$data->RESPONSIBILITY_NAME=$resp_name;
 		$data->RESPONSIBILITY_DESC=$resp_desc;
-		$data->BRANCH_ID=SysBranch::where('BRANCH_NAME',$branch_id)->value('BRANCH_ID');
+		$data->BRANCH_ID=$branch_id;
 		$data->ACTIVE_FLAG=$act_flag;
 		$data->ACTIVE_DATE=date('Y-m-d');
-		$data->CREATED_AT=$user_id;
+		$data->CREATED_BY=$user_id;
 		$data->LAST_UPDATE_BY=$user_id;
 		return $data->save();
 	}
 
+
+	public function compare_data_resp($resp_name,$resp_desc,$resp_id)
+    {
+    	if($resp_id=='')
+    	{
+    		$cek=DB::table('sys_responsibility')
+            ->where('RESPONSIBILITY_NAME','=',$resp_name)->orWhere('RESPONSIBILITY_DESC',$resp_desc)->get();
+    	}else{
+    		 $cek=DB::table('sys_responsibility')
+            ->where('RESPONSIBILITY_ID', '!=', $resp_id)
+            ->where(function ($query)  use ($resp_name,$resp_desc) {
+                $query->where('RESPONSIBILITY_NAME','=',$resp_name)
+                      ->orWhere('RESPONSIBILITY_DESC',$resp_desc);
+            })
+            ->get();
+    	}
+
+      
+
+       return $cek->count();
+    }
 	public function update_data_resp($resp_id,$resp_name,$resp_desc,$act_flag,$user_id)
 	{
 

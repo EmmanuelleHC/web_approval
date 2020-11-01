@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+
 class SysMenu extends Model
 {
     protected $table = 'sys_menu';
@@ -70,12 +71,7 @@ class SysMenu extends Model
         return $data;
     }
 
-    public function get_data_menu_detail($menu_id)
-    {
-        $statement = 'SELECT smd.*, sm.MENU_NAME from SYS_MENU_DETAIL smd, SYS_MENU sm where smd.MENU_ID = sm.MENU_ID and sm.MENU_ID = '.$menu_id.' ORDER BY SMD.SEQ';
-        $data=DB::select(DB::raw($statement));        
-        return $data;
-    }
+   
 
 
 
@@ -92,6 +88,28 @@ class SysMenu extends Model
 
      
     }
+
+    public function compare_data_menu($name,$desc,$menu_id)
+    {
+        if($menu_id=='')
+        {
+            $cek=SysMenu::where('MENU_NAME',$name)->orWhere('MENU_DESC',$desc)->get();
+
+        }else{
+            $cek=DB::table('sys_menu')
+            ->where('MENU_ID', '!=', $menu_id)
+            ->where(function ($query)  use ($menu_name,$menu_desc) {
+                $query->where('MENU_NAME','=',$menu_name)
+                      ->orWhere('MENU_DESC',$menu_desc);
+            })
+            ->get();
+        }
+    
+
+       return $cek->count();
+    }
+
+   
 
     public function insert_data_menu($name, $desc, $seq, $url, $is_detail,$user_id)
     {
@@ -111,45 +129,38 @@ class SysMenu extends Model
 
     public function update_data_menu($menu_id, $name, $desc, $seq, $url, $is_detail, $is_active, $inactive_date,$user_id)
     {
-        if($is_active == 'Y' && $inactive_date == '' || $is_active == 'N' && $inactive_date != ''){
+        if($is_active == 'Y'){
         //kalau tidak mengubah active / inactive
-            $menu=SysMenu::where('MENU_ID',$menu_id);
-            $menu->MENU_NAME=$name;
-            $menu->MENU_DESC=$desc;
-            $menu->SEQ=$seq;
-            $menu->URL=$url;
-            $menu->ACTIVE_DATE=date('Y-m-d');
-            $menu->IS_DETAIL=$is_detail;
-            $menu->ACTIVE_FLAG=$is_active;
-            $menu->LAST_UPDATE_BY=$user_id;
-            $menu->save();
+            $menu= SysMenu::where('MENU_ID',$menu_id)
+                  ->update(['MENU_NAME' =>$name,
+                        'MENU_DESC'=>$desc,
+                        'SEQ'=>$seq,
+                        'URL'=>$url,
+                        'INACTIVE_DATE'=>null,
+                        'IS_DETAIL'=>$is_detail,
+                        'ACTIVE_FLAG'=>$is_active,
+                        'LAST_UPDATE_BY'=>$user_id,
+                        'ACTIVE_FLAG'=>'Y',
+                        'UPDATED_AT'=>date('Y-m-d')
+                        ]);
+            return 1;
            
-        } else if($is_active == 'Y' && $inactive_date != ''){
-            $menu=SysMenu::where('MENU_ID',$menu_id);
-            $menu->MENU_NAME=$name;
-            $menu->MENU_DESC=$desc;
-            $menu->SEQ=$seq;
-            $menu->URL=$url;
-            $menu->ACTIVE_DATE=date('Y-m-d');
-            $menu->INACTIVE_DATE=$inactive_date;
-            $menu->IS_DETAIL=$is_detail;
-            $menu->ACTIVE_FLAG=$is_active;
-            $menu->LAST_UPDATE_BY=$user_id;
-            $menu->save();
-           
-        } else if($is_active == 'N' && $inactive_date == ''){
-            $menu=SysMenu::where('MENU_ID',$menu_id);
-            $menu->MENU_NAME=$name;
-            $menu->MENU_DESC=$desc;
-            $menu->SEQ=$seq;
-            $menu->URL=$url;
-            $menu->INACTIVE_DATE=date('Y-m-d');
-            $menu->IS_DETAIL=$is_detail;
-            $menu->ACTIVE_FLAG=$is_active;
-            $menu->LAST_UPDATE_BY=$user_id;
-            $menu->save();
-           
-        } else{
+        } else if($is_active == 'N'){
+            $menu= SysMenu::where('MENU_ID',$menu_id)
+                  ->update(['MENU_NAME' =>$name,
+                        'MENU_DESC'=>$desc,
+                        'SEQ'=>$seq,
+                        'URL'=>$url,
+                        'INACTIVE_DATE'=>date('Y-m-d'),
+                        'IS_DETAIL'=>$is_detail,
+                        'ACTIVE_FLAG'=>$is_active,
+                        'LAST_UPDATE_BY'=>$user_id,
+                        'ACTIVE_FLAG'=>'N',
+                        'UPDATED_AT'=>date('Y-m-d')
+                        ]);
+          
+            return 1;
+        }else{
             return 0;
         }
         

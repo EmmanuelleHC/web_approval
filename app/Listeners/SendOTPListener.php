@@ -2,11 +2,14 @@
 
 namespace App\Listeners;
 
-use App\Events\ExampleEvent;
+use App\Events\SendOTPEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-
-class ExampleListener
+use App\Mail\SendOTPMail;
+use Illuminate\Support\Facades\Mail;
+use App\SysUser;
+use App\EmpMaster;
+class SendOTPListener 
 {
     /**
      * Create the event listener.
@@ -24,8 +27,10 @@ class ExampleListener
      * @param  \App\Events\ExampleEvent  $event
      * @return void
      */
-    public function handle(ExampleEvent $event)
+    public function handle(SendOTPEvent $event)
     {
-        //
+          $email =EmpMaster::where('USER_ID',$event->sysrefnumotp->USER_ID)->value('EMAIL_USER');
+          
+          Mail::to($email)->send(new SendOTPMail($event->sysrefnumotp));
     }
 }

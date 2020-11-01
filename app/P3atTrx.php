@@ -7,6 +7,7 @@ use App\SysBranch;
 use App\LogHistory;
 use App\EmpMaster;
 use App\ApprovalMaster;
+use App\Events\SendApprovalEvent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 class P3atTrx extends Model
@@ -38,13 +39,7 @@ class P3atTrx extends Model
 				 	
 		}  
 
-
-		// $data_outstanding=P3atTrx::select('P3AT_NUMBER','P3AT_DATE','STATUS','EFFECTIVE_DATE',DB::raw('count(*) as TOTAL_QTY'),DB::raw('sum(ASSET_PRICE) as TOTAL_ASSET_PRICE'),DB::raw('sum(COST_OF_REMOVAL) as TOTAL_COST_REMOVAL'),DB::raw('SUM(BOOKS_PRICE) AS TOTAL_BOOKS_PRICE'))->groupBy('P3AT_NUMBER','P3AT_DATE','STATUS','EFFECTIVE_DATE')->get();
 		if($isHO==true){
-			// $data_outstanding=P3atTrx::select('P3AT_NUMBER','P3AT_DATE')->groupBy('P3AT_NUMBER')->get();
-			// foreach ($data_outstanding as $key) {
-			// 	$
-			// }
 			$data_outstanding=ApprovalMaster::select('ID_APPR_1','ID_APPR_2','ID_APPR_3','ID_APPR_4','ID_APPR_5','ID_APPR_6','ID_APPR_7','ID_APPR_8','ID_APPR_9','ID_APPR_10','ID_APPR_11','ID_APPR_12','ID_APPR_13','ID_APPR_14','ID_APPR_5','ORG_ID')->get();
 			foreach ($data_outstanding as $key) {
 			 	if($key->ID_APPR_1==$emp_id)
@@ -287,7 +282,8 @@ class P3atTrx extends Model
 
 			 	}else if($key->ID_APPR_2==$emp_id)
 			 	{
-			 		if(is_null($key->ID_APPR_3==true)){
+
+			 		if(is_null($key->ID_APPR_3)==true){
 			 			$approve_count=100;
 			 		}else{
 			 			$approve_count=2;
@@ -578,7 +574,7 @@ class P3atTrx extends Model
 		
 			
 			
-			$data_outstanding=P3atTrx::select('P3AT_NUMBER','P3AT_DATE','STATUS','EFFECTIVE_DATE',DB::raw('count(*) as TOTAL_QTY'),DB::raw('sum(ASSET_PRICE) as TOTAL_ASSET_PRICE'),DB::raw('sum(COST_OF_REMOVAL) as TOTAL_COST_REMOVAL'),DB::raw('SUM(BOOKS_PRICE) AS TOTAL_BOOKS_PRICE'))->whereIn('ORG_ID',$list_org)->whereIn('P3AT_NUMBER',$list_p3at)->groupBy('P3AT_NUMBER','P3AT_DATE','STATUS','EFFECTIVE_DATE')->get();
+			$data_outstanding=P3atTrx::select('P3AT_NUMBER','P3AT_DATE','STATUS','EFFECTIVE_DATE',DB::raw('count(*) as TOTAL_QTY'),DB::raw('sum(ASSET_PRICE) as TOTAL_ASSET_PRICE'),DB::raw('sum(COST_OF_REMOVAL) as TOTAL_COST_REMOVAL'),DB::raw('SUM(BOOKS_PRICE) AS TOTAL_BOOKS_PRICE'))->whereIn('ORG_ID',$list_org)->whereIn('P3AT_NUMBER',$list_p3at)->where('STATUS','!=','Approved')->where('STATUS','!=','Rejected')->groupBy('P3AT_NUMBER','P3AT_DATE','STATUS','EFFECTIVE_DATE')->get();
 		}else{
 
 			$data_outstanding=ApprovalMaster::select('ID_APPR_1','ID_APPR_2','ID_APPR_3','ID_APPR_4','ID_APPR_5','ID_APPR_6','ID_APPR_7','ID_APPR_8','ID_APPR_9','ID_APPR_10','ID_APPR_11','ID_APPR_12','ID_APPR_13','ID_APPR_14','ID_APPR_5','ORG_ID')->whereIn('ORG_ID',$list_org)->get();
@@ -680,7 +676,7 @@ class P3atTrx extends Model
 			 	}
 			}
 
-			$data_outstanding=P3atTrx::select('P3AT_NUMBER','P3AT_DATE','STATUS','EFFECTIVE_DATE',DB::raw('count(*) as TOTAL_QTY'),DB::raw('sum(ASSET_PRICE) as TOTAL_ASSET_PRICE'),DB::raw('sum(COST_OF_REMOVAL) as TOTAL_COST_REMOVAL'),DB::raw('SUM(BOOKS_PRICE) AS TOTAL_BOOKS_PRICE'))->whereIn('ORG_ID',$list_org_temp)->whereIn('P3AT_NUMBER',$list_p3at)->groupBy('P3AT_NUMBER','P3AT_DATE','STATUS','EFFECTIVE_DATE')->get();
+			$data_outstanding=P3atTrx::select('P3AT_NUMBER','P3AT_DATE','STATUS','EFFECTIVE_DATE',DB::raw('count(*) as TOTAL_QTY'),DB::raw('sum(ASSET_PRICE) as TOTAL_ASSET_PRICE'),DB::raw('sum(COST_OF_REMOVAL) as TOTAL_COST_REMOVAL'),DB::raw('SUM(BOOKS_PRICE) AS TOTAL_BOOKS_PRICE'))->whereIn('ORG_ID',$list_org_temp)->whereIn('P3AT_NUMBER',$list_p3at)->where('STATUS','!=','Approved')->where('STATUS','!=','Rejected')->groupBy('P3AT_NUMBER','P3AT_DATE','STATUS','EFFECTIVE_DATE')->get();
 			
 
       
@@ -695,18 +691,20 @@ class P3atTrx extends Model
 
 		$p3at_number='';
 		$list_p3at=[];
-		$data=P3atTrx::select('P3AT_NUMBER','STATUS')->where('ORG_ID',$org_id)->where('STATUS','!=','Approved')->Where('STATUS','!=','Rejected')->groupBy('P3AT_NUMBER','STATUS')->get();
+		$data=P3atTrx::select('P3AT_NUMBER','STATUS')->where('ORG_ID',$org_id)->groupBy('P3AT_NUMBER','STATUS')->get();
 		foreach ($data as $key) {
 			if($approve_count!=1){
-				if(substr($key->STATUS, -1)==($approve_count-1)){
+				if(substr($key->STATUS, -1)==($approve_count-1) ||substr($key->STATUS, -1)==($approve_count) ){
 					$p3at_number=$key->P3AT_NUMBER;
 					
-				}
+				}else if($key->STATUS=='Approved' || $key->STATUS=='Rejected'){
+					$p3at_number=$key->P3AT_NUMBER;
+				}	
 			}else{
-				if(substr($key->STATUS, -1)!=($approve_count)){
+				if(substr($key->STATUS, -1)<=($approve_count)){
 					$p3at_number=$key->P3AT_NUMBER;
-					
-				}				
+					}
+
 				
 			}
 			
@@ -727,10 +725,13 @@ class P3atTrx extends Model
 					
 				}
 			}else{
-				if(substr($key->STATUS, -1)!=($approve_count)){
-					$p3at_number=$key->P3AT_NUMBER;
-					
-				}				
+				if($key->STATUS!='Rejected')
+				{
+					if(substr($key->STATUS, -1)!=($approve_count)){
+							$p3at_number=$key->P3AT_NUMBER;					
+						}
+				}
+								
 				
 			}
 			
@@ -759,27 +760,44 @@ class P3atTrx extends Model
 		                 'UPDATED_BY'=>$user_id,
 		                 'UPDATED_AT'=>date('Y-m-d')
 		                 ]);
-		}else{
+		 	$data_history=new LogHistory();
+		 	$data_history->ID_TRX=P3atTrx::select('ID')->where('P3AT_NUMBER',$p3at_number)->value('ID');
+		 	$data_history->ID_APP=SysAppMaster::select('ID')->where('APP_NAME','P3AT APPROVAL')->value('ID');
+		 	$data_history->DESCRIPTION='Approve';
+		 	$data_history->APPROVAL_TYPE='P3AT';
+		 	$data_history->EMP_ID=$emp_id;
+		 	$data_history->REASON_APPROVAL=$reason_approval;
+		 	$data_history->APPROVAL_KE=$approve_count;
+		 	$data_history->CREATED_BY=$user_id;
+		 	$data_history->UPDATED_BY=$user_id;
+		 	$data_history->save();
 
+		}else{
+			$data= P3atTrx::where('P3AT_NUMBER',$p3at_number)          ->update(['STATUS' =>'Approved',
+		                 'UPDATED_BY'=>$user_id,
+		                 'UPDATED_AT'=>date('Y-m-d')
+		                 ]);
+			$data_history=new LogHistory();
+		 	$data_history->ID_TRX=P3atTrx::select('ID')->where('P3AT_NUMBER',$p3at_number)->value('ID');
+		 	$data_history->ID_APP=SysAppMaster::select('ID')->where('APP_NAME','P3AT APPROVAL')->value('ID');
+		 	$data_history->DESCRIPTION='Approved';
+		 	$data_history->APPROVAL_TYPE='P3AT';
+		 	$data_history->EMP_ID=$emp_id;
+		 	$data_history->REASON_APPROVAL=$reason_approval;
+		 	$data_history->APPROVAL_KE='Final';
+		 	$data_history->CREATED_BY=$user_id;
+		 	$data_history->UPDATED_BY=$user_id;
+		 	$data_history->save();
 		}
 		
-	 	$data_history=new LogHistory();
-	 	$data_history->ID_TRX=P3atTrx::select('ID')->where('P3AT_NUMBER',$p3at_number)->value('ID');
-	 	$data_history->ID_APP=SysAppMaster::select('ID')->where('APP_NAME','P3AT APPROVAL')->value('ID');
-	 	$data_history->DESCRIPTION='Approve';
-	 	$data_history->APPROVAL_TYPE='P3AT';
-	 	$data_history->EMP_ID=$emp_id;
-	 	$data_history->REASON_APPROVAL=$reason_approval;
-	 	$data_history->APPROVAL_KE=$approve_count;
-	 	$data_history->CREATED_BY=$user_id;
-	 	$data_history->UPDATED_BY=$user_id;
-	 	$data_history->save();
+	 	if(event(new SendApprovalEvent($data_history))){
+            
+            return 1; 
+        }else{
 
-	 	if($data_history){
-	 		return 1;
-	 	}else{
-	 		return 0;
-	 	}
+            return 0;   
+        }
+        
 	}
 	public function reject_p3at($p3at_number,$user_id,$reason_approval)
 	{
@@ -801,11 +819,13 @@ class P3atTrx extends Model
 	 	$data_history->UPDATED_BY=$user_id;
 	 	$data_history->save();
 
-	 	if($data_history){
-	 		return 1;
-	 	}else{
-	 		return 0;
-	 	}
+	 	if(event(new SendApprovalEvent($data_history))){
+            
+            return 1; 
+        }else{
+
+            return 0;   
+        }
 	}
 
 	public function ws_download_data_p3at($company_code,$branch_code,$p3at_date,$p3at_number,$asset_number,$asset_name,$service_date,$asset_qty,$asset_price,$asset_location,$removal_cost,$book_price,$removal_reason){

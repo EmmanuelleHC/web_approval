@@ -67,7 +67,18 @@ class SysCompany extends Model
 
     public function compare_data_company($company_name,$company_code,$company_id)
     {
-        $cek=SysCompany::where('COMPANY_CODE',$company_code)->orWhere('COMPANY_NAME',$company_name)->where('COMPANY_ID','!=',$company_id)->get();
+        if($company_id==''){
+            $cek=SysCompany::where('COMPANY_CODE',$company_code)->orWhere('COMPANY_NAME',$company_name)->get();
+        }else{
+            $cek=DB::table('sys_company')
+            ->where('COMPANY_ID', '!=', $company_id)
+            ->where(function ($query)  use ($company_code,$company_name) {
+                $query->where('COMPANY_CODE','=',$company_code)
+                      ->orWhere('COMPANY_NAME',$company_name);
+            })
+            ->get();
+        }
+        
        return $cek->count();
     }
 

@@ -70,7 +70,8 @@ class MasterRole extends BaseController
   {
      $role_id=$this->request->input('role_id');
       $role_name=$this->request->input('role_name');
+       $role_desc=$this->request->input('role_desc');
        $role=new SysRole();   
-      return response()->json($role->compare_data_master_role($role_name,$role_id), 200); 
+      return response()->json($role->compare_data_master_role($role_name,$role_desc,$role_id), 200); 
   }
 }

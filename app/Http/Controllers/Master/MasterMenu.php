@@ -90,7 +90,7 @@ class MasterMenu extends BaseController
             ->request
             ->input('menu_id');
         $menu = new SysMenu();
-        return response()->json($menu->get_data_menu($menu_id) , 200);
+        return response()->json($menu->get_data_submenu($menu_id) , 200);
 
     }
 
@@ -112,7 +112,7 @@ class MasterMenu extends BaseController
             ->request
             ->input('menu_id');
 
-        $menu_id = $this
+        $menu_name = $this
             ->request
             ->input('menu_name');
 
@@ -128,13 +128,7 @@ class MasterMenu extends BaseController
             ->request
             ->input('seq');
 
-        $url = $this
-            ->request
-            ->input('url');
 
-        $active_flag = $this
-            ->request
-            ->input('active_flag');
         $user_id = $this
             ->request
             ->input('user_id');
@@ -145,42 +139,80 @@ class MasterMenu extends BaseController
 
         $menu_detail = new SysMenuDetail();
 
-        return response()->json($menu_detail->insert_data_menu_detail($menu_id, $menu_name, $menu_desc, $submenu_id, $seq, $url, $active_flag, $user_id) , 200);
+        return response()->json($menu_detail->insert_data_menu_detail($menu_id, $menu_name, $menu_desc, $submenu_id, $seq, $user_id) , 200);
 
     }
 
+
+    public function compare_data_menu(Request $request)
+    {
+        $menu_id='';
+        $menu_id=$this
+            ->request
+            ->input('menu_id');
+        $name = $this
+            ->request
+            ->input('menu_name');
+        $desc = $this
+            ->request
+            ->input('menu_desc');
+        
+         $menu = new SysMenu();
+          
+        return response()->json($menu->compare_data_menu($name,$desc,$menu_id), 200); 
+    }
+
+
+    public function compare_data_menu_detail(Request $request)
+    {
+        $menu_detail_id='';
+        $menu_detail_id=$this
+            ->request
+            ->input('menu_detail_id');
+        $menu_name = $this
+            ->request
+            ->input('menu_name');
+        $menu_desc = $this
+            ->request
+            ->input('menu_desc');
+        
+         $menu = new SysMenuDetail();
+          
+        return response()->json($menu->compare_data_menu_detail($menu_detail_id,$menu_name, $menu_desc), 200); 
+    }
     public function update_data_menu_detail(Request $request)
     {
+        $menu_detail_id = $this
+            ->request
+            ->input('menu_detail_id');
+
         $menu_id = $this
             ->request
             ->input('menu_id');
 
-        $menu_id = $this
+        $menu_name = $this
             ->request
             ->input('menu_name');
 
         $menu_desc = $this
             ->request
             ->input('menu_desc');
-
         $submenu_id = $this
             ->request
             ->input('submenu_id');
-
+        $active_flag = $this
+            ->request
+            ->input('active_flag');
         $seq = $this
             ->request
             ->input('seq');
 
-        $url = $this
-            ->request
-            ->input('url');
-
         $user_id = $this
             ->request
             ->input('user_id');
-
+           
         $menu_detail = new SysMenuDetail();
-        return response()->json($menu_detail->update_sys_menu_detail($det_id, $menu_id, $menu_name, $menu_desc, $submenu_id, $seq, $url, $active_flag, $inactive_date, $user_id) , 200);
+        return response()->json($menu_detail->update_data_menu_detail($menu_detail_id, $menu_id, $menu_name, $menu_desc, $submenu_id, $seq,$active_flag,$user_id) , 200);
     }
 
     public function delete_menu_detail(Request $request)
@@ -203,11 +235,11 @@ class MasterMenu extends BaseController
 
 
     public function insert_data_menu(Request $request)
-    {   $name=$this->request->input('name');
-        $desc=$this->request->input('desc');
+    {   $name=$this->request->input('menu_name');
+        $desc=$this->request->input('menu_desc');
         $seq=$this->request->input('seq');
         $url=$this->request->input('url');
-        $is_detail=$this->request->input('is_detail');
+        $is_detail=$this->request->input('detail');
         $user_id=$this->request->input('user_id');
         $menu=new SysMenu();
         return response()->json($menu->insert_data_menu($name, $desc, $seq, $url, $is_detail,$user_id), 200);
@@ -218,12 +250,12 @@ class MasterMenu extends BaseController
     public function update_data_menu(Request $request)
   {
     $menu_id=$this->request->input('menu_id');
-    $name=$this->request->input('name');
-    $desc=$this->request->input('desc');
+    $name=$this->request->input('menu_name');
+    $desc=$this->request->input('menu_desc');
     $seq=$this->request->input('seq');
     $url=$this->request->input('url');
     $is_detail=$this->request->input('is_detail');
-    $is_active=$this->request->input('is_active');
+    $is_active=$this->request->input('active_flag');
     $inactive_date=$this->request->input('inactive_date');
     $user_id=$this->request->input('user_id');
 

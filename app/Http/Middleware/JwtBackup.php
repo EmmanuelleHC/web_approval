@@ -23,23 +23,9 @@ class JwtMiddleware
            // 
             $credentials = JWT::decode($token,env('JWT_SECRET') , ['HS256']);
         } catch(ExpiredException $e) {
-            $payload = [
-                'iss' => "lumen-jwt", // Issuer of the token
-                'sub' => "web-approval", // Subject of the token
-                'iat' => time(), // Time when JWT was issued. 
-                'exp' => time() + 30 // Expiration time
-            ];
-            
-            // As you can see we are passing `JWT_SECRET` as the second parameter that will 
-            // be used to decode the token in the future.
             return response()->json([
-                'status' => true,
-                'newToken' => JWT::encode($payload, env('JWT_SECRET'))
-            ], 200);
-
-            // return response()->json([
-            //     'error' => 'Provided token is expired.'
-            // ], 400);
+                'error' => 'Provided token is expired.'
+            ], 400);
         } catch(Exception $e) {
             return response()->json([
                 'error' => 'Exception message '.$e

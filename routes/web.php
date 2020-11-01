@@ -36,7 +36,7 @@ $router->group(['middleware' => 'jwt.auth'], function () use ($router)
     $router->post('search_user_specific', ['uses' => 'Master\MasterUser@search_user_specific']);
     $router->post('update_user', ['uses' => 'Master\MasterUser@update_user']);
     $router->post('get_resp_user', ['uses' => 'Master\MasterUser@get_resp_user']);
-
+    $router->post('compare_data_user', ['uses' => 'Master\MasterUser@compare_data_user']);
     $router->post('insert_user', ['uses' => 'Master\MasterUser@insert_user']);
     $router->post('get_data_master_role', ['uses' => 'Master\MasterRole@get_data_master_role']);
     $router->post('insert_role', ['uses' => 'Master\MasterRole@insert_role']);
@@ -52,17 +52,19 @@ $router->group(['middleware' => 'jwt.auth'], function () use ($router)
     $router->post('compare_data_company', ['uses' => 'Master\MasterCompany@compare_data_company']);
     $router->post('get_data_cbg_by_company', ['uses' => 'Master\MasterBranch@get_data_cbg_by_company']);
     $router->post('check_branch_org_id', ['uses' => 'Master\MasterBranch@check_branch_org_id']);
-    $router->post('get_data_cbg', ['uses' => 'Master\MasterBranch@get_data_cbg']);
+    $router->get('get_data_cbg', ['uses' => 'Master\MasterBranch@get_data_cbg']);
     $router->post('insert_data_cbg', ['uses' => 'Master\MasterBranch@insert_data_cbg']);
     $router->post('update_data_cbg', ['uses' => 'Master\MasterBranch@update_data_cbg']);
     $router->post('get_data_cbg_by_company', ['uses' => 'Master\MasterBranch@get_data_cbg_by_company']);
 
     
     $router->post('save_data_master_responsibility', ['uses' => 'Master\MasterMenu@save_data_master_responsibility']);
+     $router->post('compare_data_menu', ['uses' => 'Master\MasterMenu@compare_data_menu']);
     $router->get('get_data_menu', ['uses' => 'Master\MasterMenu@get_data_menu']);
     $router->post('get_data_menu_all', ['uses' => 'Master\MasterMenu@get_data_menu_all']);
     $router->post('get_data_submenu', ['uses' => 'Master\MasterMenu@get_data_submenu']);
     $router->post('get_data_menu_detail', ['uses' => 'Master\MasterMenu@get_data_menu_detail']);
+     $router->post('compare_data_menu_detail', ['uses' => 'Master\MasterMenu@compare_data_menu_detail']);
     $router->post('insert_data_menu_detail', ['uses' => 'Master\MasterMenu@insert_data_menu_detail']);
     $router->post('update_data_menu_detail', ['uses' => 'Master\MasterMenu@update_data_menu_detail']);
     $router->post('delete_menu_detail', ['uses' => 'Master\MasterMenu@delete_menu_detail']);
@@ -81,12 +83,27 @@ $router->group(['middleware' => 'jwt.auth'], function () use ($router)
        $router->post('get_log_history', ['uses' => 'P3AT\P3ATController@get_log_history']);
        $router->post('reject_p3at', ['uses' => 'P3AT\P3ATController@reject_p3at']);
         $router->post('approve_p3at', ['uses' => 'P3AT\P3ATController@approve_p3at']);
+         $router->post('generate_otp', ['uses' => 'P3AT\P3ATController@generate_otp']);
+          $router->post('cek_otp', ['uses' => 'P3AT\P3ATController@cek_otp']);
+            $router->post('get_last_otp', ['uses' => 'P3AT\P3ATController@get_last_otp']);
+             $router->post('submit_otp', ['uses' => 'P3AT\P3ATController@submit_otp']);
 
-    
+      $router->post('get_data_cbg_by_id', ['uses' => 'Master\MasterBranch@get_data_cbg_by_id']);
+       $router->post('compare_data_branch', ['uses' => 'Master\MasterBranch@compare_data_branch']);
+        $router->post('compare_data_resp', ['uses' => 'Master\MasterResp@compare_data_resp']);
+          $router->get('get_data_master_employee', ['uses' => 'Master\MasterEmployee@get_data_master_employee']);
+          $router->get('get_username_existing', ['uses' => 'Master\MasterEmployee@get_username_existing']);
 
-    
-    
-    
+         $router->post('get_username_existing2', ['uses' => 'Master\MasterEmployee@get_username_existing2']);          
+         $router->post('insert_data_emp', ['uses' => 'Master\MasterEmployee@insert_data_emp']);
+          
+         $router->post('compare_data_emp', ['uses' => 'Master\MasterEmployee@compare_data_emp']);
+
+
+         $router->post('update_data_emp', ['uses' => 'Master\MasterEmployee@update_data_emp']);
+
+          $router->get('get_data_master_approval', ['uses' => 'Master\MasterApproval@get_data_master_approval']);
+           $router->post('get_data_approval_detail', ['uses' => 'Master\MasterApproval@get_data_approval_detail']);
     
     
     

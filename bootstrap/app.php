@@ -59,8 +59,13 @@ $app->singleton(
 |
 */
 
-$app->configure('app');
+$app->configure('auth');
+$app->configure('cache');
 
+$app->configure('mail');
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -102,6 +107,8 @@ $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
 $app->register(Mtownsend\ResponseXml\Providers\ResponseXmlServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
+$app->register(PhanAn\CascadingConfig\CascadingConfigServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
