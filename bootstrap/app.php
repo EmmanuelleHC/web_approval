@@ -109,7 +109,8 @@ $app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
 $app->register(Mtownsend\ResponseXml\Providers\ResponseXmlServiceProvider::class);
 $app->register(Illuminate\Mail\MailServiceProvider::class);
 $app->register(PhanAn\CascadingConfig\CascadingConfigServiceProvider::class);
-
+$app->register(Elibyy\TCPDF\ServiceProvider::class);
+class_alias(Elibyy\TCPDF\Facades\TCPDF::class, 'PDF');
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

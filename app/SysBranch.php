@@ -39,7 +39,11 @@ class SysBranch extends Model
     $data=DB::select(DB::raw($statement));        
         return $data;
   }
-
+  public function get_approval_branch()
+  {
+    $data=SysBranch::all();        
+    return $data;
+  }
   public function get_data_cbg_by_id($branch_id)
   {
     $data = SysBranch::select('BRANCH_ID','BRANCH_CODE','BRANCH_NAME','ALTERNATE_NAME','ORG_ID','SOB_ID','ORG_TYPE','COMPANY_ID','FTP_PATH','ADDRESS1','ADDRESS2','ADDRESS3','CITY','PROVINCE','VAT_REGISTRATION_NUM','TGL_NPWP','MANAGER','PHONE','FAX','UPDATED_AT',

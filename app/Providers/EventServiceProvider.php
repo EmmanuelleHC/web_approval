@@ -15,6 +15,15 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\SendApprovalEvent::class => [
             \App\Listeners\SendApprovalListener::class,
         ],
+         \App\Events\SendDailyEvent::class => [
+            \App\Listeners\SendDailyListener::class,
+        ],
+         \App\Events\SendRejectEvent::class => [
+            \App\Listeners\SendRejectListener::class,
+        ],
+          \App\Events\SendP3ATEvent::class => [
+            \App\Listeners\SendP3ATListener::class,
+        ],
         \App\Events\SendOTPEvent::class => [
             \App\Listeners\SendOTPListener::class,
         ],

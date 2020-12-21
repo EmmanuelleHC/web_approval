@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 
 use App\SysUser;
 use App\LogHistory;
@@ -34,12 +35,15 @@ class SendApprovalMail extends Mailable
      */
      public function build()
      {
-        $id=1;
-      $p3at_num=P3atTrx::where('ID',$this->loghistory->ID_TRX)->value('P3AT_NUMBER');
+       $id=1;
+       $p3at_num=P3atTrx::where('ID',$this->loghistory->ID_TRX)->value('P3AT_NUMBER');
+
+
+       $amount=P3atTrx::select(DB::raw('sum(ASSET_PRICE) as ASSET_PRICE'))->where('ID',$this->loghistory->ID_TRX)->groupBy('P3AT_NUMBER')->value('ASSET_PRICE');
        $employee_id='';
-          $org_id=P3atTrx::where('ID',$this->loghistory->ID_TRX)->groupBy('P3AT_NUMBER')->groupBy('ORG_ID')->value('ORG_ID');
-          $approval=ApprovalMaster::where('ORG_ID',$org_id)->where('ID_APP',$id)->get();
-          foreach ($approval as $key) {
+       $org_id=P3atTrx::where('ID',$this->loghistory->ID_TRX)->groupBy('P3AT_NUMBER')->groupBy('ORG_ID')->value('ORG_ID');
+       $approval=ApprovalMaster::where('ORG_ID',$org_id)->where('ID_APP',$id)->where('AMOUNT_FROM','>=',$amount)->orWhere('AMOUNT_TO','<=',$amount)->get();
+       foreach ($approval as $key) {
             
             if($key->ID_APPR_1==$this->loghistory->EMP_ID)
             {
@@ -117,15 +121,16 @@ class SendApprovalMail extends Mailable
       $nama=EmpMaster::where('ID',$employee_id)->value('EMP_NAME');
       $emp_number=EmpMaster::where('ID',$employee_id)->value('EMP_NUMBER');
       $p3at_detail=P3atTrx::where('P3AT_NUMBER',$p3at_num)->get();
-     
+      $link_program='http://sd6webdev.indomaret.lan:8080/approval';
 
-       return $this->from('emmaiscoming111@gmail')
+       return $this->from('fad.igr@indomaret.co.id')
                    ->view('approval_email_template')
                    ->with([
                          'p3at_num'=>$p3at_num,
                          'emp_name'=>$nama,
                          'emp_num'=>$emp_number,
-                         'detail_p3at'=>$p3at_detail
+                         'detail_p3at'=>$p3at_detail,
+                         'link_program'=>$link_program,
                      ]);
      }
 }

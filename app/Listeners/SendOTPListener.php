@@ -9,6 +9,8 @@ use App\Mail\SendOTPMail;
 use Illuminate\Support\Facades\Mail;
 use App\SysUser;
 use App\EmpMaster;
+use Illuminate\Support\Facades\DB;
+
 class SendOTPListener 
 {
     /**

@@ -18,8 +18,9 @@ $router->get('/', function () use ($router)
         ->app
         ->version();
 });
-
 $router->post('auth/login', ['uses' => 'AuthController@authenticate']);
+
+
 
 $router->group(['middleware' => 'jwt.auth'], function () use ($router)
 {
@@ -28,6 +29,10 @@ $router->group(['middleware' => 'jwt.auth'], function () use ($router)
         $users = \App\User::all();
         return response()->json($users);
     });
+    $router->get('get_approval_type', ['uses' => 'Master\MasterApproval@get_approval_type']);
+    $router->get('get_approval_branch', ['uses' => 'Master\MasterApproval@get_approval_branch']);
+    $router->post('get_approval_avail', ['uses' => 'Master\MasterApproval@get_approval_avail']);
+    
     $router->post('get_menu', ['uses' => 'Home\Home@get_menu']);
     $router->post('get_user_resp', ['uses' => 'Home\Home@get_user_resp']);
     $router->get('get_list_role', ['uses' => 'Master\MasterUser@get_list_role']);
@@ -104,8 +109,18 @@ $router->group(['middleware' => 'jwt.auth'], function () use ($router)
 
           $router->get('get_data_master_approval', ['uses' => 'Master\MasterApproval@get_data_master_approval']);
            $router->post('get_data_approval_detail', ['uses' => 'Master\MasterApproval@get_data_approval_detail']);
-    
-    
-    
-});
 
+            $router->post('compare_data_approval', ['uses' => 'Master\MasterApproval@compare_data_approval']);
+
+             $router->post('insert_data_approval', ['uses' => 'Master\MasterApproval@insert_data_approval']);
+             $router->post('update_data_approval', ['uses' => 'Master\MasterApproval@update_data_approval']);
+              $router->post('validate_approval', ['uses' => 'Master\MasterApproval@validate_approval']); 
+              
+    
+
+});
+$router->post('print_report', ['uses' => 'P3AT\Report@report_p3at']);   
+     
+$router->get('send_p3at', ['uses' => 'P3AT\P3ATController@send_p3at']);
+$router->get('send_daily', ['uses' => 'P3AT\P3ATController@send_daily']);
+$router->get('ws_otp_nonactive', ['uses' => 'P3AT\P3ATApi@ws_otp_nonactive']);

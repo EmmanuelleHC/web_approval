@@ -58,6 +58,19 @@ class P3ATController extends BaseController
         return response()->json($data->cek_otp($user_id), 200);
     }
 
+     public function send_daily(Request $Request)
+    {       $data=new P3atTrx();
+
+        return response()->json($data->send_daily(), 200);
+    }
+
+
+      public function send_p3at(Request $Request)
+    {   $data=new P3atTrx();
+
+        return response()->json($data->send_p3at(), 200);
+    }
+
 
     public function get_last_otp(Request $Request)
     {

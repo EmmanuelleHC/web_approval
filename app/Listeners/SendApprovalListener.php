@@ -12,6 +12,8 @@ use App\LogHistory;
 use App\EmpMaster;
 use App\P3atTrx;
 use App\ApprovalMaster;
+use Illuminate\Support\Facades\DB;
+
 class SendApprovalListener 
 {
     /**
@@ -34,8 +36,11 @@ class SendApprovalListener
     {
           $id=1;
           $employee_id='';
+
+
+           $amount=P3atTrx::select(DB::raw('sum(ASSET_PRICE) as ASSET_PRICE'))->where('ID',$event->loghistory->ID_TRX)->groupBy('P3AT_NUMBER')->value('ASSET_PRICE');
           $org_id=P3atTrx::where('ID',$event->loghistory->ID_TRX)->groupBy('P3AT_NUMBER')->groupBy('ORG_ID')->value('ORG_ID');
-          $approval=ApprovalMaster::where('ORG_ID',$org_id)->where('ID_APP',$id)->get();
+          $approval=ApprovalMaster::where('ORG_ID',$org_id)->where('ID_APP',$id)->where('AMOUNT_FROM','>=',$amount)->orWhere('AMOUNT_TO','<=',$amount)->get();
           foreach ($approval as $key) {
             
             if($key->ID_APPR_1==$event->loghistory->EMP_ID)
@@ -56,10 +61,22 @@ class SendApprovalListener
                     $employee_id=$key->ID_APPR_4;
                 }
             }
+              if($key->ID_APPR_4==$event->loghistory->EMP_ID)
+            {
+                if($key->ID_APPR_5!=null){
+                    $employee_id=$key->ID_APPR_5;
+                }
+            }
             if($key->ID_APPR_5==$event->loghistory->EMP_ID)
             {
                 if($key->ID_APPR_6!=null){
                     $employee_id=$key->ID_APPR_6;
+                }
+            }
+            if($key->ID_APPR_6==$event->loghistory->EMP_ID)
+            {
+                if($key->ID_APPR_7!=null){
+                    $employee_id=$key->ID_APPR_7;
                 }
             }
             if($key->ID_APPR_7==$event->loghistory->EMP_ID)
